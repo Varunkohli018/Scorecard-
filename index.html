@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cricket Scorecard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background-color: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      background: #1c1c1c;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .tab {
+      padding: 12px 30px;
+      cursor: pointer;
+      color: #999;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .tab.active {
+      background-color: #2a2a2a;
+      color: #fff;
+    }
+
+    .scorecard {
+      width: 100%;
+      max-width: 600px;
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      color: #bbb;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 5px;
+    }
+
+    .player {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #2c2c2c;
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .player img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #444;
+    }
+
+    .player-name {
+      font-weight: 600;
+    }
+
+    .dismissal {
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .stats {
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .extras,
+    .total {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .total {
+      border-top: 1px solid #333;
+      padding-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .player-name {
+        font-size: 14px;
+      }
+      .stats {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tabs">
+    <div class="tab active" data-team="india">India</div>
+    <div class="tab" data-team="pakistan">Pakistan</div>
+  </div>
+
+  <div class="scorecard" id="scorecard"></div>
+
+  <script>
+    const data = {
+      india: {
+        players: [
+          { name: "A. Sharma", runs: 5, balls: 6, fours: 1, sixes: 0, sr: 83.33, dismissal: "c Haris Rauf b Faheem Ashraf", img: "https://i.ibb.co/txhWMLr/player1.png" },
+          { name: "S. Gill", runs: 12, balls: 10, fours: 1, sixes: 0, sr: 120.00, dismissal: "c Haris Rauf b Faheem Ashraf", img: "https://i.ibb.co/txhWMLr/player2.png" },
+          { name: "S. Yadav (C)", runs: 1, balls: 5, fours: 0, sixes: 0, sr: 20.00, dismissal: "c Salman Ali Agha b Shaheen Afridi", img: "https://i.ibb.co/txhWMLr/player3.png" },
+          { name: "T. Varma", runs: 69, balls: 53, fours: 3, sixes: 4, sr: 130.19, dismissal: "not out", img: "https://i.ibb.co/txhWMLr/player4.png" },
+          { name: "S. Samson (WK)", runs: 24, balls: 21, fours: 2, sixes: 1, sr: 114.29, dismissal: "c Sahibzada Farhan b Abrar Ahmed", img: "https://i.ibb.co/txhWMLr/player5.png" },
+          { name: "S. Dube", runs: 33, balls: 22, fours: 2, sixes: 2, sr: 150.00, dismissal: "c Shaheen Afridi b Faheem Ashraf", img: "https://i.ibb.co/txhWMLr/player6.png" },
+          { name: "R. Singh", runs: 4, balls: 1, fours: 1, sixes: 0, sr: 400.00, dismissal: "not out", img: "https://i.ibb.co/txhWMLr/player7.png" }
+        ],
+        extras: 2,
+        total: "150 (5 wkts, 19.4 ov)"
+      },
+
+      pakistan: {
+        players: [
+          { name: "B. Azam (C)", runs: 55, balls: 42, fours: 5, sixes: 2, sr: 130.95, dismissal: "b Bumrah", img: "https://i.ibb.co/txhWMLr/player1.png" },
+          { name: "M. Rizwan (WK)", runs: 35, balls: 28, fours: 4, sixes: 1, sr: 125.00, dismissal: "c Jadeja b Siraj", img: "https://i.ibb.co/txhWMLr/player2.png" },
+          { name: "F. Zaman", runs: 18, balls: 15, fours: 2, sixes: 0, sr: 120.00, dismissal: "c Yadav b Axar", img: "https://i.ibb.co/txhWMLr/player3.png" },
+          { name: "S. Shakeel", runs: 10, balls: 9, fours: 1, sixes: 0, sr: 111.11, dismissal: "b Kuldeep", img: "https://i.ibb.co/txhWMLr/player4.png" },
+          { name: "A. Ali", runs: 5, balls: 6, fours: 0, sixes: 0, sr: 83.33, dismissal: "c R. Singh b Bumrah", img: "https://i.ibb.co/txhWMLr/player5.png" }
+        ],
+        extras: 4,
+        total: "127 (All out, 18.5 ov)"
+      }
+    };
+
+    const scorecardDiv = document.getElementById("scorecard");
+    const tabs = document.querySelectorAll(".tab");
+
+    function renderTeam(team) {
+      const teamData = data[team];
+      let html = `
+        <div class="header">
+          <span>Batting</span>
+          <span>R&nbsp;&nbsp;B&nbsp;&nbsp;4s&nbsp;&nbsp;6s&nbsp;&nbsp;S/R</span>
+        </div>
+      `;
+
+      teamData.players.forEach(player => {
+        html += `
+          <div class="player">
+            <div class="player-info">
+              <img src="${player.img}" alt="">
+              <div>
+                <div class="player-name">${player.name}</div>
+                <div class="dismissal">${player.dismissal}</div>
+              </div>
+            </div>
+            <div class="stats">
+              ${player.runs}&nbsp;&nbsp;${player.balls}&nbsp;&nbsp;${player.fours}&nbsp;&nbsp;${player.sixes}&nbsp;&nbsp;${player.sr.toFixed(2)}
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+        <div class="extras"><span>Extras</span><span>${teamData.extras}</span></div>
+        <div class="total"><span>Total Runs</span><span>${teamData.total}</span></div>
+      `;
+
+      scorecardDiv.innerHTML = html;
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        renderTeam(tab.dataset.team);
+      });
+    });
+
+    renderTeam("india");
+  </script>
+
+</body>
+</html>
